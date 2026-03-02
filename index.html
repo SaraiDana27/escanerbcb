@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Escáner BCB</title>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2/dist/tesseract.min.js"></script>
+</head>
+<body>
+
+<h2>Escanear Número de Serie</h2>
+<input type="file" id="imageInput" accept="image/*" capture="camera">
+<p id="estado"></p>
+
+<script>
+document.getElementById('imageInput').addEventListener('change', function(e){
+
+  const file = e.target.files[0];
+  document.getElementById("estado").innerText = "Procesando...";
+
+  Tesseract.recognize(file, 'eng')
+  .then(({ data: { text } }) => {
+
+    let numero = text.replace(/\D/g, '');
+
+    if(numero.length > 0){
+
+      navigator.clipboard.writeText(numero);
+
+      alert("Número detectado y copiado: " + numero);
+
+      window.location.href = "http://bcb.gob.bo/?q=content/verificador-de-n%C3%BAmero-de-serie";
+
+    } else {
+      alert("No se detectó número.");
+    }
+
+  });
+
+});
+</script>
+
+</body>
+</html>
