@@ -15,21 +15,31 @@
 document.getElementById('imageInput').addEventListener('change', function(e){
 
   const file = e.target.files[0];
-  document.getElementById("estado").innerText = "Procesando...";
+  document.getElementById("estado").innerText = "Procesando imagen...";
 
   Tesseract.recognize(file, 'eng')
   .then(({ data: { text } }) => {
 
+    // Extraer solo números
     let numero = text.replace(/\D/g, '');
 
     if(numero.length > 0){
 
-      navigator.clipboard.writeText(numero);
+      // Copiar al portapapeles
+      navigator.clipboard.writeText(numero)
+      .then(() => {
 
-      alert("Número detectado y copiado: " + numero);
-window.location.href = "https://www.bcb.gob.bo/?q=content/verificador-de-n%C3%BAmero-de-serie";
+        alert("Número copiado: " + numero + 
+              "\n\nSe abrirá el verificador.\nSolo presiona PEGAR en el campo Serie.");
+
+        // Redireccionar
+        window.location.href = 
+        "https://www.bcb.gob.bo/?q=content/verificador-de-n%C3%BAmero-de-serie";
+
+      });
+
     } else {
-      alert("No se detectó número.");
+      alert("No se detectó un número válido.");
     }
 
   });
